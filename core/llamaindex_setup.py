@@ -4,26 +4,29 @@ from llama_index.core import VectorStoreIndex, StorageContext
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core import Settings
-from llama_index.embeddings.openai import OpenAIEmbedding
-from llama_index.llms.openai import OpenAI
+from llama_index.llms.groq import Groq
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-from .pinecone_client import index
+from .pinecone_client import get_pinecone_index
+from semicon_chatbot_backend.settings import GROQ_API_KEY
 
 # --- LLM & Embedding Configuration ---
-Settings.embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
-Settings.llm = OpenAI(model="gpt-4o-mini", temperature=0)
+Settings.embed_model = HuggingFaceEmbedding(
+    model_name="BAAI/bge-base-en-v1.5",
+)
 
-# 500–800 tokens, 100 overlap — keeps process steps intact, avoids broken context
+Settings.llm = Groq(
+    model="llama3-8b-8192",
+    temperature=0,
+    api_key=GROQ_API_KEY
+)
+
 Settings.node_parser = SentenceSplitter(
-    chunk_size=600,   # Middle of 500–800 range
+    chunk_size=600,
     chunk_overlap=100
 )
 
-# --- Pinecone Vector Store ---
-vector_store = PineconeVectorStore(pinecone_index=index)
-storage_context = StorageContext.from_defaults(vector_store=vector_store)
-
-# --- Strict Grounding System Prompt (from project spec) ---
+# --- Strict Grounding System Prompt ---
 SYSTEM_PROMPT = """You are a semiconductor manufacturing expert assistant.
 
 Rules:
@@ -34,5 +37,15 @@ Rules:
 - Always mention which document or source your answer comes from
 """
 
+# --- Pinecone Vector Store ---
+def get_vector_store():
+    """Lazily create the vector store only when needed."""
+    return PineconeVectorStore(pinecone_index=get_pinecone_index())
+
+def get_storage_context():
+    """Lazily create storage context only when needed."""
+    return StorageContext.from_defaults(vector_store=get_vector_store())
+
 def get_index():
-    return VectorStoreIndex.from_vector_store(vector_store)
+    """Lazily create the VectorStoreIndex only when needed."""
+    return VectorStoreIndex.from_vector_store(get_vector_store())

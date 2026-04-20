@@ -14,6 +14,8 @@ DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+GROQ_API_KEY = config("GROQ_API_KEY")
+
 
 # Application definition
 

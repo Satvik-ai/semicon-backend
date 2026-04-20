@@ -5,7 +5,7 @@ from pypdf import PdfReader
 from llama_index.core import VectorStoreIndex, Document as LlamaDoc
 from llama_index.core.node_parser import SentenceSplitter
 
-from core.llamaindex_setup import storage_context
+from core.llamaindex_setup import get_storage_context
 from .models import Document
 
 
@@ -57,7 +57,7 @@ def ingest_document(document: Document) -> str:
     nodes = splitter.get_nodes_from_documents([llama_doc])
 
     # Index nodes into Pinecone
-    VectorStoreIndex(nodes, storage_context=storage_context)
+    VectorStoreIndex(nodes, storage_context=get_storage_context())
 
     # Mark as indexed in PostgreSQL
     document.is_indexed = True
