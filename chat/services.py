@@ -8,6 +8,16 @@ from llama_index.core import PromptTemplate
 from core.llamaindex_setup import get_index, SYSTEM_PROMPT
 from .models import ChatSession, ChatMessage
 
+"""
+The complete query flow when a user submits a query from the frontend:
+    query_chatbot(user, query, filters)
+    └─ build_query_engine(process_filter, stage_filter)
+            ├─ VectorIndexRetriever  →  Pinecone top-5 chunks
+            └─ RetrieverQueryEngine  →  Groq LLM synthesis
+    └─ Save ChatSession + ChatMessage to PostgreSQL
+    └─ Return { answer, sources, session_id, message_id }
+"""
+
 
 def build_query_engine(process_filter: str = None, stage_filter: str = None):
     """
