@@ -566,3 +566,6 @@ class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('id', 'message', 'vote', 'created_at')
     list_filter = ('vote',)
 
+admin.site.site_header = "SemiconChatbot Admin"
+admin.site.site_title = "SemiconChatbot Admin Portal"
+admin.site.index_title = "Welcome to the SemiconChatbot Admin Portal"
