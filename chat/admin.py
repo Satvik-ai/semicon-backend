@@ -8,7 +8,7 @@ Adds a custom page at /admin/chat/semiconchat/ that gives
 the admin a full chat interface wired to the same RAG
 pipeline used by the API:
 
-   Admin types query
+   Admin types the query
         ↓
    POST to /admin/chat/semiconchat/
         ↓
@@ -571,3 +571,4 @@ class FeedbackAdmin(admin.ModelAdmin):
 admin.site.site_header = "SemiconChatbot Admin"
 admin.site.site_title = "SemiconChatbot Admin Portal"
 admin.site.index_title = "Welcome to the SemiconChatbot Admin Portal"
+
