@@ -66,3 +66,16 @@ class Feedback(models.Model):
     def __str__(self):
         return f"{self.vote} — Message {self.message_id}"
 
+class SemiconChat(ChatSession):
+    """
+    Proxy model for the SemiconChat admin page.
+    proxy=True → NO new database table created.
+    Django reuses ChatSession's table.
+    Sessions started from SemiconChat admin appear in
+    ChatSession admin as normal sessions.
+    """
+    class Meta:
+        proxy = True
+        verbose_name        = "SemiconChat"
+        verbose_name_plural = "SemiconChat"
+
