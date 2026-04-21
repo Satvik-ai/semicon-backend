@@ -382,8 +382,6 @@ class SemiconChatAdmin(admin.ModelAdmin):
                 '',
                 self.admin_site.admin_view(self.semiconchat_view),
                 name='chat_semiconchat_changelist',
-                # name must follow pattern: <app>_<model>_changelist
-                # so the sidebar "SemiconChat" link works automatically
             ),
         ]
  
