@@ -1,30 +1,32 @@
 # documents/admin.py
 
-# ============================================================
-# DOCUMENT INGESTION PIPELINE TRIGGERED FROM DJANGO ADMIN
-#
-# Flow implemented here:
-#   Admin uploads PDF via Django Admin UI
-#          ↓
-#   DocumentAdmin.save_model() is called by Django
-#          ↓
-#   Document record saved to PostgreSQL (title, file, metadata)
-#          ↓
-#   ingest_document_safe(document) is called automatically
-#          ↓
-#   Text extracted from PDF (pypdf)
-#          ↓
-#   Text chunked (SentenceSplitter: 600 tokens, 100 overlap)
-#          ↓
-#   Chunks embedded (HuggingFace bge-base, runs locally)
-#          ↓
-#   Embeddings + metadata stored in Pinecone
-#          ↓
-#   Document.is_indexed = True saved back to PostgreSQL
-#
-# The admin also shows indexing status, allows re-indexing,
-# and displays any ingestion errors directly in the UI.
-# ============================================================
+"""
+============================================================
+DOCUMENT INGESTION PIPELINE TRIGGERED FROM DJANGO ADMIN
+
+Flow implemented here:
+   Admin uploads PDF via Django Admin UI
+          ↓
+   DocumentAdmin.save_model() is called by Django
+          ↓
+   Document record saved to PostgreSQL (title, file, metadata)
+          ↓
+   ingest_document_safe(document) is called automatically
+          ↓
+   Text extracted from PDF (pypdf)
+          ↓
+   Text chunked (SentenceSplitter: 600 tokens, 100 overlap)
+          ↓
+   Chunks embedded (HuggingFace bge-base, runs locally)
+          ↓
+   Embeddings + metadata stored in Pinecone
+          ↓
+   Document.is_indexed = True saved back to PostgreSQL
+
+The admin also shows indexing status, allows re-indexing,
+and displays any ingestion errors directly in the UI.
+============================================================
+"""
 
 from django.contrib import admin
 from django.utils.html import format_html

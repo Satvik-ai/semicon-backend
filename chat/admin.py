@@ -1,36 +1,38 @@
 # chat/admin.py
- 
-# ============================================================
-# SEMICONCHAT — Admin Chat Interface
-#
-# Adds a custom page at /admin/chat/semiconchat/ that gives
-# the admin a full chat interface wired to the same RAG
-# pipeline used by the API:
-#
-#   Admin types query
-#        ↓
-#   POST to /admin/chat/semiconchat/
-#        ↓
-#   query_chatbot() called directly (same service as API)
-#        ↓
-#   LlamaIndex Query Engine
-#        ↓
-#   1. Embed query (HuggingFace bge-base, local)
-#   2. Retrieve top-k from Pinecone
-#   3. Apply filters if process/stage selected
-#   4. Pass context + query to Groq LLM
-#        ↓
-#   LLM generates grounded answer
-#        ↓
-#   Answer + sources rendered in admin page
-#   Session + messages saved to PostgreSQL automatically
-#
-# HOW IT WORKS IN DJANGO ADMIN:
-#   - SemiconChat is a proxy model of ChatSession (no new DB table)
-#   - get_urls() injects /admin/chat/semiconchat/ into the admin router
-#   - semiconchat_view() handles GET (show form) and POST (run query)
-#   - "SemiconChat" appears in the sidebar under "CHAT"
-# ============================================================
+
+"""
+============================================================
+SEMICONCHAT — Admin Chat Interface
+
+Adds a custom page at /admin/chat/semiconchat/ that gives
+the admin a full chat interface wired to the same RAG
+pipeline used by the API:
+
+   Admin types query
+        ↓
+   POST to /admin/chat/semiconchat/
+        ↓
+   query_chatbot() called directly (same service as API)
+        ↓
+   LlamaIndex Query Engine
+        ↓
+   1. Embed query (HuggingFace bge-base, local)
+   2. Retrieve top-k from Pinecone
+   3. Apply filters if process/stage selected
+   4. Pass context + query to Groq LLM
+        ↓
+   LLM generates grounded answer
+        ↓
+   Answer + sources rendered in admin page
+   Session + messages saved to PostgreSQL automatically
+
+ HOW IT WORKS IN DJANGO ADMIN:
+   - SemiconChat is a proxy model of ChatSession (no new DB table)
+   - get_urls() injects /admin/chat/semiconchat/ into the admin router
+   - semiconchat_view() handles GET (show form) and POST (run query)
+   - "SemiconChat" appears in the sidebar under "CHAT"
+============================================================
+"""
  
 from django.contrib import admin
 from django.utils.html import format_html
