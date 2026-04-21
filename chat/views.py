@@ -104,3 +104,4 @@ def feedback_view(request, message_id):
         "vote": feedback.vote,
         "created": created
     }, status=status.HTTP_200_OK)
+

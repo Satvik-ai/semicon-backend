@@ -112,3 +112,4 @@ def query_chatbot(user, user_query: str, session_id: int = None,
         "answer": answer,
         "sources": sources,
     }
+
