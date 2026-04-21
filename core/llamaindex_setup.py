@@ -8,22 +8,22 @@ from llama_index.llms.groq import Groq
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 from .pinecone_client import get_pinecone_index
-from semicon_chatbot_backend.settings import GROQ_API_KEY
+from semicon_chatbot_backend.settings import GROQ_API_KEY, EMBEDDING_MODEL, LLM_MODEL, LLM_TEMPERATURE, CHUNK_SIZE, CHUNK_OVERLAP
 
 # --- LLM & Embedding Configuration ---
 Settings.embed_model = HuggingFaceEmbedding(
-    model_name="BAAI/bge-base-en-v1.5",
+    model_name=EMBEDDING_MODEL,
 )
 
 Settings.llm = Groq(
-    model="llama3-8b-8192",
-    temperature=0,
+    model=LLM_MODEL,
+    temperature=LLM_TEMPERATURE,
     api_key=GROQ_API_KEY
 )
 
 Settings.node_parser = SentenceSplitter(
-    chunk_size=600,
-    chunk_overlap=100
+    chunk_size=CHUNK_SIZE,
+    chunk_overlap=CHUNK_OVERLAP
 )
 
 # --- Strict Grounding System Prompt ---

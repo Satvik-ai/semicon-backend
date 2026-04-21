@@ -9,13 +9,18 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='your-default-secret-key')
+DEBUG = config('DEBUG', cast=bool, default=False)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='localhost,127.0.0.1')
 
-GROQ_API_KEY = config("GROQ_API_KEY")
-PINECONE_API_KEY = config("PINECONE_API_KEY")
+GROQ_API_KEY = config("GROQ_API_KEY", cast=str, default="Your_Groq_API_Key")
+PINECONE_API_KEY = config("PINECONE_API_KEY",cast=str, default="Your_Pinecone_API_Key")
+EMBEDDING_MODEL = config("EMBEDDING_MODEL", cast=str, default="BAAI/bge-base-en-v1.5")
+LLM_MODEL = config("LLM_MODEL", cast=str, default="gpt-3.5-turbo")
+LLM_TEMPERATURE = config("LLM_TEMPERATURE", cast=float, default=0)
+CHUNK_SIZE = config("CHUNK_SIZE", cast=int, default=600)
+CHUNK_OVERLAP = config("CHUNK_OVERLAP", cast=int, default=100)
 
 
 # Application definition
