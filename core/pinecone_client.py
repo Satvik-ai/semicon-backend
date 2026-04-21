@@ -1,7 +1,8 @@
 # core/pinecone_client.py
 
 import os
-from pinecone import Pinecone, PodSpec
+from pinecone import Pinecone, ServerlessSpec
+from semicon_chatbot_backend.settings import PINECONE_API_KEY
 
 _index = None
 
@@ -11,8 +12,7 @@ def get_pinecone_index():
         return _index
 
     pc = Pinecone(
-        api_key=os.getenv("PINECONE_API_KEY", "local-dummy-key"),
-        host=os.getenv("PINECONE_HOST", "http://localhost:5081"),
+        api_key=PINECONE_API_KEY,
     )
 
     index_name = "semicon-index"
@@ -22,9 +22,9 @@ def get_pinecone_index():
             name=index_name,
             dimension=768,
             metric="cosine",
-            spec=PodSpec(
-                environment="local",
-                pod_type="p1.x1",
+            spec=ServerlessSpec(
+                cloud="aws",
+                region="us-east-1"
             )
         )
 
