@@ -72,15 +72,18 @@ def query_chatbot(user, user_query: str, session_id: int = None,
     """
     if not user_query or not user_query.strip():
         return {"error": "Query cannot be empty."}
+    
+    words = user_query.split(" ")
+    session_title = " ".join(words[:5]) + ("…" if len(words) > 5 else "")
 
     # Get or create session
     if session_id:
         try:
-            session = ChatSession.objects.get(id=session_id, user=user)
+            session = ChatSession.objects.get(id=session_id, user=user, title=session_title)
         except ChatSession.DoesNotExist:
-            session = ChatSession.objects.create(user=user)
+            session = ChatSession.objects.create(user=user, title=session_title)
     else:
-        session = ChatSession.objects.create(user=user)
+        session = ChatSession.objects.create(user=user, title=session_title)
 
     # Save the user message
     ChatMessage.objects.create(
