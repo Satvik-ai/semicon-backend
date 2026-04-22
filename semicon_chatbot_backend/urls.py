@@ -13,7 +13,7 @@ urlpatterns = [
 
     # Auth — token login/logout via DRF
     path('api/auth/', include('rest_framework.urls')),
-    path('api/auth/login/', obtain_auth_token),
+    path('api/auth/login/', obtain_auth_token, name='api-token-auth'),
 
     # App routes
     path('api/chat/', include('chat.urls')),
