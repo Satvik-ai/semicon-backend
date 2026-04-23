@@ -79,3 +79,22 @@ class SemiconChat(ChatSession):
         verbose_name        = "SemiconChat"
         verbose_name_plural = "SemiconChat"
 
+class ExcelContext(models.Model):
+    """
+    Stores parsed Excel sheet data for a chat session.
+    The sheet is parsed to a markdown table string and held here.
+    When a query comes in for this session, this table is injected
+    into the LLM prompt directly — no Pinecone retrieval needed.
+    Only one active Excel context per session at a time.
+    """
+    session    = models.OneToOneField(
+                    ChatSession, on_delete=models.CASCADE,
+                    related_name='excel_context'
+                 )
+    filename   = models.CharField(max_length=255)
+    table_text = models.TextField()   # parsed markdown table
+    uploaded_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Excel: {self.filename} — Session {self.session_id}"
+

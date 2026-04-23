@@ -6,7 +6,7 @@ from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core import PromptTemplate
 
 from core.llamaindex_setup import get_index, SYSTEM_PROMPT
-from .models import ChatSession, ChatMessage
+from .models import ChatSession, ChatMessage, ExcelContext
 
 """
 The complete query flow when a user submits a query from the frontend:
@@ -62,6 +62,47 @@ def build_query_engine(process_filter: str = None, stage_filter: str = None):
     )
 
 
+def _query_excel(user_query: str, table_text: str, filename: str) -> str:
+    """
+    Answers a question directly from an Excel table using the Groq LLM.
+    The table is injected into the prompt — no Pinecone retrieval needed.
+    Called only when an ExcelContext exists for the session.
+    """
+    from llama_index.core import Settings
+
+    excel_prompt = (
+        f"You are a data analyst. The user has uploaded an Excel file named '{filename}'.\n"
+        f"The file may contain multiple sheets — each section below is labelled with its sheet name.\n"
+        f"Answer the question using ONLY the data provided. If the answer spans multiple sheets, "
+        f"reference the sheet name when citing data.\n"
+        f"If the answer requires calculation, show your working.\n\n"
+        f"DATA:\n{table_text}\n\n"
+        f"QUESTION: {user_query}\n\n"
+        f"ANSWER:"
+    )
+
+    try:
+        response = Settings.llm.complete(excel_prompt)
+        return str(response)
+
+    except Exception as e:
+        error_str = str(e).lower()
+
+        # Groq returns a 413 with "request too large" or "tokens" in the message
+        # Catch it and return a readable message to the user instead of crashing
+        if "413" in str(e) or "too large" in error_str or "tokens" in error_str or "rate_limit" in error_str:
+            return (
+                "⚠️ Your Excel file is too large to process in one request — "
+                "the data exceeds the token limit of the current LLM.\n\n"
+                "To fix this, try one of the following:\n"
+                "• Upload a smaller sheet (100 rows or fewer per sheet)\n"
+                "• Delete columns that are not relevant to your question\n"
+                "• Split the file into smaller files and upload one at a time"
+            )
+        
+        raise
+
+
 def query_chatbot(user, user_query: str, session_id: int = None,
                   process_filter: str = None, stage_filter: str = None) -> dict:
     """
@@ -92,24 +133,33 @@ def query_chatbot(user, user_query: str, session_id: int = None,
         content=user_query
     )
 
-    # Run RAG query
-    query_engine = build_query_engine(process_filter=process_filter, stage_filter=stage_filter)
-    response = query_engine.query(user_query)
+    # ── Check if session has an uploaded Excel sheet ──────────────────────────
+    # If yes: answer directly from the table data using LLM (no Pinecone retrieval)
+    # If no:  run the normal RAG pipeline against Pinecone
+    excel_ctx = ExcelContext.objects.filter(session=session).first()
 
-    # Build structured source list with metadata
-    sources = []
-    for node in response.source_nodes:
-        source_info = {
-            "text": node.node.text[:300],  # Preview, not full chunk
-            "score": round(node.score, 4) if node.score else None,
-            "doc_title": node.node.metadata.get("doc_title", "Unknown"),
-            "process": node.node.metadata.get("process", ""),
-            "stage": node.node.metadata.get("stage", ""),
-            "doc_type": node.node.metadata.get("doc_type", ""),
-        }
-        sources.append(source_info)
+    if excel_ctx:
+        answer = _query_excel(user_query, excel_ctx.table_text, excel_ctx.filename)
+        sources = [{"doc_title": excel_ctx.filename, "doc_type": "excel", "text": ""}]
+    else:
+        # Run RAG query
+        query_engine = build_query_engine(process_filter=process_filter, stage_filter=stage_filter)
+        response = query_engine.query(user_query)
 
-    answer = str(response)
+        # Build structured source list with metadata
+        sources = []
+        for node in response.source_nodes:
+            source_info = {
+                "text": node.node.text[:300],  # Preview, not full chunk
+                "score": round(node.score, 4) if node.score else None,
+                "doc_title": node.node.metadata.get("doc_title", "Unknown"),
+                "process": node.node.metadata.get("process", ""),
+                "stage": node.node.metadata.get("stage", ""),
+                "doc_type": node.node.metadata.get("doc_type", ""),
+            }
+            sources.append(source_info)
+
+        answer = str(response)
 
     # Save the assistant response with sources
     assistant_msg = ChatMessage.objects.create(
