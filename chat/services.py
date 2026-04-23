@@ -79,7 +79,7 @@ def query_chatbot(user, user_query: str, session_id: int = None,
     # Get or create session
     if session_id:
         try:
-            session = ChatSession.objects.get(id=session_id, user=user, title=session_title)
+            session = ChatSession.objects.get(id=session_id, user=user)
         except ChatSession.DoesNotExist:
             session = ChatSession.objects.create(user=user, title=session_title)
     else:
