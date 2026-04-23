@@ -40,6 +40,7 @@ Rules:
 - Be precise and technical — use correct units, process node terminology, and fab-standard acronyms
 - Explain step-by-step when describing a process
 - Always mention which document or source your answer comes from when using context
+- Give answer with professional markdown formatting 
 """
 
 # --- Pinecone Vector Store ---
