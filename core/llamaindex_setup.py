@@ -5,14 +5,15 @@ from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core import Settings
 from llama_index.llms.groq import Groq
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.embeddings.huggingface_api import HuggingFaceInferenceAPIEmbedding
 
 from .pinecone_client import get_pinecone_index
-from semicon_chatbot_backend.settings import GROQ_API_KEY, EMBEDDING_MODEL, LLM_MODEL, LLM_TEMPERATURE, CHUNK_SIZE, CHUNK_OVERLAP
+from semicon_chatbot_backend.settings import GROQ_API_KEY, EMBEDDING_MODEL, LLM_MODEL, LLM_TEMPERATURE, CHUNK_SIZE, CHUNK_OVERLAP,HF_TOKEN
 
 # --- LLM & Embedding Configuration ---
-Settings.embed_model = HuggingFaceEmbedding(
+Settings.embed_model = HuggingFaceInferenceAPIEmbedding(
     model_name=EMBEDDING_MODEL,
+    token=HF_TOKEN,
 )
 
 Settings.llm = Groq(
