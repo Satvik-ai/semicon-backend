@@ -90,11 +90,6 @@ DATABASES = {
     }
 }
 
-# Render provides DATABASE_URL automatically — overrides individual DB settings
-DATABASE_URL = config('DATABASE_URL', default=None)
-if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
-
 # Static files — WhiteNoise serves them directly from Django on Render
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
