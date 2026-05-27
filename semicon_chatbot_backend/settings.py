@@ -24,6 +24,8 @@ CHUNK_SIZE = config("CHUNK_SIZE", cast=int, default=600)
 CHUNK_OVERLAP = config("CHUNK_OVERLAP", cast=int, default=100)
 HF_TOKEN = config("HF_TOKEN", cast=str, default="Your_HuggingFace_API_Token")
 GEMINI_API_KEY = config("GEMINI_API_KEY", cast=str, default="Your_Gemini_API_Key")
+ADMIN_USERNAME = config("ADMIN_USERNAME", cast=str)
+ADMIN_PASSWORD = config("ADMIN_PASSWORD", cast=str)
 
 
 # Application definition
