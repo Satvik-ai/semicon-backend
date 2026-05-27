@@ -17,12 +17,13 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='localhost,127.0.0.1
 
 GROQ_API_KEY = config("GROQ_API_KEY", cast=str, default="Your_Groq_API_Key")
 PINECONE_API_KEY = config("PINECONE_API_KEY",cast=str, default="Your_Pinecone_API_Key")
-EMBEDDING_MODEL = config("EMBEDDING_MODEL", cast=str, default="BAAI/bge-base-en-v1.5")
+EMBEDDING_MODEL = config("EMBEDDING_MODEL", cast=str, default="models/text-embedding-004")
 LLM_MODEL = config("LLM_MODEL", cast=str, default="gpt-3.5-turbo")
 LLM_TEMPERATURE = config("LLM_TEMPERATURE", cast=float, default=0)
 CHUNK_SIZE = config("CHUNK_SIZE", cast=int, default=600)
 CHUNK_OVERLAP = config("CHUNK_OVERLAP", cast=int, default=100)
 HF_TOKEN = config("HF_TOKEN", cast=str, default="Your_HuggingFace_API_Token")
+GEMINI_API_KEY = config("GEMINI_API_KEY", cast=str, default="Your_Gemini_API_Key")
 
 
 # Application definition
