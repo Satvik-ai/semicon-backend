@@ -3,25 +3,23 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from semicon_chatbot_backend.settings import ADMIN_USERNAME, ADMIN_PASSWORD
+from semicon_chatbot_backend.settings import ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL
 
 
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
-        username = ADMIN_USERNAME
-        password = ADMIN_PASSWORD
 
-        if not User.objects.filter(username=username).exists():
+        if not User.objects.filter(username=ADMIN_USERNAME).exists():
             user = User.objects.create_superuser(
-                username=username,
-                email='admin@semiconchat.com',
-                password=password
+                username=ADMIN_USERNAME,
+                email=ADMIN_EMAIL,
+                password=ADMIN_PASSWORD
             )
-            self.stdout.write(f'Superuser created: {username}')
+            self.stdout.write(f'Superuser created: {ADMIN_USERNAME}')
         else:
-            user = User.objects.get(username=username)
-            self.stdout.write(f'Superuser already exists: {username}')
+            user = User.objects.get(username=ADMIN_USERNAME)
+            self.stdout.write(f'Superuser already exists: {ADMIN_USERNAME}')
 
         token, created = Token.objects.get_or_create(user=user)
         self.stdout.write(f'AUTH TOKEN: {token.key}')
