@@ -2,7 +2,7 @@
 
 import os
 from pinecone import Pinecone, ServerlessSpec
-from semicon_chatbot_backend.settings import PINECONE_API_KEY
+from semicon_chatbot_backend.settings import PINECONE_API_KEY,PINECONE_EMBEDDING_DIMENSION
 
 _index = None
 
@@ -20,7 +20,7 @@ def get_pinecone_index():
     if index_name not in pc.list_indexes().names():
         pc.create_index(
             name=index_name,
-            dimension=768,
+            dimension=PINECONE_EMBEDDING_DIMENSION,
             metric="cosine",
             spec=ServerlessSpec(
                 cloud="aws",

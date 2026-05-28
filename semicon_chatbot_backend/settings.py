@@ -27,6 +27,7 @@ GEMINI_API_KEY = config("GEMINI_API_KEY", cast=str, default="Your_Gemini_API_Key
 ADMIN_USERNAME = config("ADMIN_USERNAME", cast=str)
 ADMIN_PASSWORD = config("ADMIN_PASSWORD", cast=str)
 ADMIN_EMAIL = config("ADMIN_EMAIL", cast=str)
+PINECONE_EMBEDDING_DIMENSION = config("PINECONE_EMBEDDING_DIMENSION", cast=int, default=768)
 
 
 # Application definition

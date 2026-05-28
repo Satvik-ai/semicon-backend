@@ -5,15 +5,16 @@ from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core import Settings
 from llama_index.llms.groq import Groq
-from llama_index.embeddings.gemini import GeminiEmbedding
+from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 
 from .pinecone_client import get_pinecone_index
-from semicon_chatbot_backend.settings import GROQ_API_KEY, EMBEDDING_MODEL, LLM_MODEL, LLM_TEMPERATURE, CHUNK_SIZE, CHUNK_OVERLAP,HF_TOKEN,GEMINI_API_KEY
+from semicon_chatbot_backend.settings import GROQ_API_KEY, EMBEDDING_MODEL, LLM_MODEL, LLM_TEMPERATURE, CHUNK_SIZE, CHUNK_OVERLAP,HF_TOKEN,GEMINI_API_KEY,PINECONE_EMBEDDING_DIMENSION
 
 # --- LLM & Embedding Configuration ---
-Settings.embed_model = GeminiEmbedding(
+Settings.embed_model = GoogleGenAIEmbedding(
     model_name=EMBEDDING_MODEL,
-    api_key=GEMINI_API_KEY
+    api_key=GEMINI_API_KEY,
+    output_dimensionality=PINECONE_EMBEDDING_DIMENSION,
 )
 
 Settings.llm = Groq(
